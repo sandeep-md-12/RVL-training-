@@ -1,9 +1,10 @@
 from sqlalchemy.orm import Session
 from models.task_model import Task
+import redis.asyncio as aioredis
 from schemas.task_schema import TaskCreate, TaskUpdate
 
 class TaskRepository:
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, redis_client: aioredis.Redis):
         self.db = db
 
     def create_task(self, task_data: TaskCreate):
