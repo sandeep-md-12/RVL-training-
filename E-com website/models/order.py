@@ -7,6 +7,8 @@ class Order(Base):
 
     order_id = Column(String, primary_key=True, index=True)
     customer_id = Column(String, ForeignKey("customers.customer_id"), nullable=False)
+    # user_id from the JWT at the time of order creation — used for ownership checks
+    owner_user_id = Column(String, nullable=True)
     total_amount = Column(Float, nullable=False)
     order_date = Column(DateTime, nullable=False)
     status = Column(String, default="pending")           # pending, confirmed, cancelled

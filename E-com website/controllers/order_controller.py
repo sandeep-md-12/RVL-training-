@@ -7,8 +7,8 @@ class OrderController:
     def __init__(self, db: AsyncSession):
         self.service = OrderService(db)
 
-    async def create_order(self, customer_id: str):
-        return await self.service.create_order(customer_id)
+    async def create_order(self, customer_id: str, owner_user_id: str = None):
+        return await self.service.create_order(customer_id, owner_user_id)
 
     async def apply_coupon(self, order_id: str, coupon_code: str):
         try:
@@ -33,6 +33,12 @@ class OrderController:
 
     async def get_customer_orders(self, customer_id: str):
         return await self.service.get_customer_orders(customer_id)
+
+    async def get_orders_by_user(self, owner_user_id: str):
+        return await self.service.get_orders_by_user(owner_user_id)
+
+    async def get_all_orders(self):
+        return await self.service.get_all_orders()
 
     async def get_order_summary(self, order_id: str):
         return await self.service.get_order_summary(order_id)

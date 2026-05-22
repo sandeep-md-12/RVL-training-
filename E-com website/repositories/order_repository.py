@@ -33,3 +33,19 @@ class OrderRepository:
         await self.db.commit()
         await self.db.refresh(order)
         return order
+
+    async def get_by_owner_user(self, owner_user_id: str) -> List[Order]:
+        """Return all orders created by a specific user (JWT owner_user_id)."""
+        result = await self.db.execute(
+            select(Order)
+            .where(Order.owner_user_id == owner_user_id)
+            .options(selectinload(Order.items))
+        )
+        return result.scalars().all()
+
+    async def get_all(self) -> List[Order]:
+        """Return every order in the system."""
+        result = await self.db.execute(
+            select(Order).options(selectinload(Order.items))
+        )
+        return result.scalars().all()
