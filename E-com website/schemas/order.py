@@ -14,6 +14,7 @@ class OrderItemResponse(BaseModel):
 class OrderResponse(BaseModel):
     order_id: str
     customer_id: str
+    owner_user_id: Optional[str] = None
     total_amount: float
     order_date: datetime
     status: str

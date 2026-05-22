@@ -7,6 +7,7 @@ from routes.customer_routes import router as customer_router
 from routes.coupon_routes import router as coupon_router
 from routes.cart_routes import router as cart_router
 from routes.order_routes import router as order_router
+from routes.auth_routes import router as auth_router
 from utils.exceptions import (
     InsufficientStockError, InvalidCouponError,
     OrderAlreadyConfirmedError, ProductNotFoundError
@@ -46,6 +47,7 @@ app.include_router(customer_router)
 app.include_router(coupon_router)
 app.include_router(cart_router)
 app.include_router(order_router)
+app.include_router(auth_router)
 
 @app.get("/", tags=["Health"])
 async def root():

@@ -25,7 +25,7 @@ class OrderService:
         self.product_repo = ProductRepository(db)
         self.coupon_service = CouponService(db)
 
-    async def create_order(self, customer_id: str) -> dict:
+    async def create_order(self, customer_id: str, owner_user_id: str = None) -> dict:
         customer = await self.customer_repo.get_by_id(customer_id)
         print ("got customer ", {customer})
         if not customer:
@@ -58,6 +58,7 @@ class OrderService:
         order = Order(
             order_id=str(uuid.uuid4()),
             customer_id=customer_id,
+            owner_user_id=owner_user_id,
             total_amount=total,
             order_date=datetime.utcnow(),
             status="pending",
@@ -159,6 +160,16 @@ class OrderService:
         orders = await self.order_repo.get_by_customer(customer_id)
         return [await self._format_order(o) for o in orders]
 
+    async def get_orders_by_user(self, owner_user_id: str):
+        """Return all orders whose owner_user_id matches the given user_id."""
+        orders = await self.order_repo.get_by_owner_user(owner_user_id)
+        return [await self._format_order(o) for o in orders]
+
+    async def get_all_orders(self):
+        """Return every order in the system (admin use)."""
+        orders = await self.order_repo.get_all()
+        return [await self._format_order(o) for o in orders]
+
     async def get_order_summary(self, order_id: str) -> str:
         order = await self.order_repo.get_by_id(order_id)
         if not order:
@@ -195,6 +206,7 @@ class OrderService:
         return {
             "order_id": order.order_id,
             "customer_id": order.customer_id,
+            "owner_user_id": order.owner_user_id,
             "total_amount": order.total_amount,
             "order_date": order.order_date,
             "status": order.status,
