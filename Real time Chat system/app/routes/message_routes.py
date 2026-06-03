@@ -4,6 +4,7 @@ from typing import Optional
 from app.utils.database import get_db
 from app.controllers.message_controller import MessageController
 from app.schemas.message import MessageCreate, MessageHistoryResponse, MessageResponse
+from app.schemas.search import MessageSearchRequest, MessageSearchResponse
 from app.dependencies import get_current_user
 from app.models.user import User
 
@@ -57,3 +58,12 @@ async def delete_message(
     db: AsyncSession = Depends(get_db),
 ):
     return await MessageController(db).soft_delete(message_id, current_user.id, current_user.role.value)
+
+
+@router.post("/search", response_model=MessageSearchResponse)
+async def search_messages(
+    body: MessageSearchRequest,
+    _: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    return await MessageController(db).search(body)

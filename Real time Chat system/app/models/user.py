@@ -1,6 +1,8 @@
-from sqlalchemy import BigInteger, String, Boolean, Enum as SAEnum
+from sqlalchemy import BigInteger, String, Boolean, Enum as SAEnum, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.utils.database import Base
+from datetime import datetime
+from typing import Optional
 import enum
 
 
@@ -19,6 +21,7 @@ class User(Base):
     role: Mapped[UserRole] = mapped_column(SAEnum(UserRole), default=UserRole.user, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_online: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    last_seen: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
 
     memberships: Mapped[list["RoomMember"]] = relationship("RoomMember", back_populates="user", cascade="all, delete-orphan")
     sent_messages: Mapped[list["Message"]] = relationship("Message", foreign_keys="Message.sender_id", back_populates="sender", cascade="all, delete-orphan")
