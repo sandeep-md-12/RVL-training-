@@ -28,6 +28,8 @@ async def init_db():
     from app.models.room import Room
     from app.models.room_member import RoomMember
     from app.models.message import Message
+    from app.models.message_receipt import MessageReceipt
+    from app.models.user_room_state import UserRoomState
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

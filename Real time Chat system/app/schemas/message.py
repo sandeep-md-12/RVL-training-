@@ -22,6 +22,8 @@ class MessageResponse(BaseModel):
     content: str
     is_deleted: bool
     created_at: datetime
+    delivered_to: list[int] = []
+    read_by: list[int] = []
 
     model_config = {"from_attributes": True}
 

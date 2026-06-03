@@ -3,6 +3,7 @@ from fastapi import HTTPException, status
 from typing import Optional
 from app.services.message_service import MessageService
 from app.schemas.message import MessageCreate
+from app.schemas.search import MessageSearchRequest, MessageSearchResponse
 from app.utils.exceptions import NotFoundError, ForbiddenError, MessageDeletedError
 
 
@@ -41,3 +42,9 @@ class MessageController:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
         except ForbiddenError as e:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
+    async def search(self, req: MessageSearchRequest) -> MessageSearchResponse:
+        return await self.service.search(req)
+
+    async def get_missed_messages(self, room_id: int, after_message_id: int) -> list[dict]:
+        return await self.service.get_missed_messages(room_id, after_message_id)

@@ -20,6 +20,7 @@ class Message(Base):
     sender: Mapped["User"] = relationship("User", foreign_keys=[sender_id], back_populates="sent_messages")
     room: Mapped[Optional["Room"]] = relationship("Room", back_populates="messages")
     recipient: Mapped[Optional["User"]] = relationship("User", foreign_keys=[recipient_id])
+    receipts: Mapped[list["MessageReceipt"]] = relationship("MessageReceipt", back_populates="message", cascade="all, delete-orphan")
 
     def __eq__(self, other): return isinstance(other, Message) and self.id == other.id
     def __hash__(self): return hash(self.id)

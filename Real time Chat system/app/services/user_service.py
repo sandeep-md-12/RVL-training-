@@ -3,6 +3,7 @@ from app.repositories.user_repository import UserRepository
 from app.models.user import User, UserRole
 from app.utils.auth import hash_password, verify_password, create_access_token
 from app.utils.exceptions import AlreadyExistsError, NotFoundError, InvalidCredentialsError, InactiveUserError
+from datetime import datetime, timezone
 
 
 class UserService:
@@ -17,6 +18,7 @@ class UserService:
             "role": user.role,
             "is_active": user.is_active,
             "is_online": user.is_online,
+            "last_seen": user.last_seen,
         }
 
     async def register(self, username: str, email: str, password: str) -> dict:
@@ -49,7 +51,15 @@ class UserService:
         if not user:
             raise NotFoundError("User", user_id)
         user.is_online = False
+        user.last_seen = datetime.now(timezone.utc)
         await self.repo.update(user)
+
+    async def set_offline(self, user_id: int):
+        user = await self.repo.get_by_id(user_id)
+        if user:
+            user.is_online = False
+            user.last_seen = datetime.now(timezone.utc)
+            await self.repo.update(user)
 
     async def get_all(self) -> list[dict]:
         users = await self.repo.get_all()
